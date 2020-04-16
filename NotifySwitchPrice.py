@@ -19,17 +19,26 @@ DOUMORI_URL = 'https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-Nintendo-Swi
 LIMIT_VALUE = 34000
 
 def recogPrice(webdriver,URL,lim_value):
+	# URLを開く
 	webdriver.get(URL)
+	# lim_valueとの比較用の変数 
+	# 0にしておけばとりあえず比較はしてくれるし、異常の通知になるかも？
+	test_value = 0;
 
 	# 値段を取得
 	try:
+		# 「カートに入れる」ボタンの場合
 		price = webdriver.find_element_by_id('buyNew_noncbb').text
 	except NoSuchElementException:
+		# 「すべての出品者を見る」ボタンの場合
 		price = webdriver.find_element_by_id('unqualifiedBuyBox').text
-		price = re.findall('￥[0-9\,]*', price)[0]
 	
-	# lim_valueとの比較用の変数
-	test_value = int(price[1:].replace(",",""))
+	# 空文字じゃなければ
+	if price:
+		price = re.search('￥[0-9\,]*', price).group()
+		test_value = int(price[1:].replace(",",""))
+	else:
+		price = price + "(取得できませんでした。)"
 
 	# lim_value以下だったらLINEで送る
 	if test_value< lim_value:
