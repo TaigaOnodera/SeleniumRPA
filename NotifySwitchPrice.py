@@ -8,6 +8,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+CHROME_DRIVER_DIRECTORY = '/bin/'
+
 LINE_Notify_URL = "https://notify-api.line.me/api/notify"
 ACCESS_TOKEN = 'S1Vl8SdQGDbgS8m5ytMAmyWn4jQlYbFplv5ULWRgCyC'
 
@@ -71,7 +73,7 @@ if __name__ == '__main__':
     options.add_argument('--window-size=1280,1024')
     # ブラウザの起動とログイン
     try:
-        b = webdriver.Chrome(options=options,executable_path='/usr/local/bin/chromedriver')
+        b = webdriver.Chrome(options=options,executable_path=CHROME_DRIVER_DIRECTORY + 'chromedriver')
     except:
         print('Failed to open browser.')
         exit()
@@ -85,7 +87,7 @@ if __name__ == '__main__':
         color   = recogPrice(b,COLORFUL_URL, LIMIT_VALUE_NORMAL )
         doumori = recogPrice(b,DOUMORI_URL , LIMIT_VALUE_DOUMORI)
 
-        # １時間で異常なければ送信
+        # １時間おきに異常なければ送信
         if gray and color and doumori and count %60 == 0:
             # LINE Notifyで送るメッセージ
             message = datetime.now().strftime("%Y/%m/%d %H:%M:%S") + " : Nothing for alert"
